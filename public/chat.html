@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnlineChat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="chat-page">
+
+  <!-- Barra superior -->
+  <header class="chat-header">
+    <span class="chat-header-logo"></span>
+    <span class="chat-header-title">OnlineChat</span>
+    <span id="selfName" class="chat-header-user"></span>
+    <button id="leaveBtn" class="leave-btn" title="Salir">✕ Salir</button>
+  </header>
+
+  <!-- Contenedor de mensajes -->
+  <main id="messages" class="messages-container" aria-live="polite" aria-label="Mensajes del chat">
+    <!-- Los mensajes se insertan aquí -->
+  </main>
+
+  <!-- Formulario de envío -->
+  <footer class="chat-footer">
+    <form id="messageForm" autocomplete="off">
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Escribe un mensaje…"
+        maxlength="1000"
+        required
+        autofocus
+      />
+      <button type="submit" id="sendBtn">Enviar</button>
+    </form>
+  </footer>
+
+  <!-- Socket.io cliente -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- DOMPurify para sanitizar en cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnlineChat — Ingresar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+
+  <div class="login-card">
+    <div class="login-logo"></div>
+    <h1>OnlineChat</h1>
+    <p class="login-subtitle">Ingresa tu nombre para unirte</p>
+
+    <form id="loginForm" autocomplete="off">
+      <input
+        id="usernameInput"
+        type="text"
+        placeholder="Tu nombre de usuario"
+        maxlength="30"
+        required
+        autofocus
+      />
+      <button type="submit" id="joinBtn">Entrar al chat →</button>
+    </form>
+
+    <p class="login-note">No se necesita contraseña</p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('usernameInput').value.trim();
+      if (!username) return;
+      // Guardar en sessionStorage y redirigir
+      sessionStorage.setItem('chat_username', username);
+      window.location.href = 'chat.html';
+    });
+  </script>
+</body>
+</html>
