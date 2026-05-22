@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const sanitizeHtml = require('sanitize-html');
 const path = require('path');
+const { getAiResponse } = require('./ai');
 
 const app = express();
 const server = http.createServer(app);
@@ -107,6 +109,37 @@ io.on('connection', (socket) => {
 
     // Emitir a todos
     io.emit('chat message', msgData);
+
+    // Si el mensaje comienza con @sofia, invocar DeepSeek
+    if (text.toLowerCase().startsWith('@sofia')) {
+      const prompt = text.replace(/^@sofia\s*/i, '').trim();
+      if (prompt) {
+        // Notificar que la IA está respondiendo
+        io.emit('user_event', {
+          text: 'Sofía está escribiendo...',
+          type: 'typing'
+        });
+
+        getAiResponse(prompt, messageHistory, user.username)
+          .then((aiResponse) => {
+            const aiMsgData = {
+              username: 'Sofía',
+              text: aiResponse,
+              color: '#8e44ad', // Morado distintivo
+              timestamp: new Date()
+            };
+            addToHistory(aiMsgData);
+            io.emit('chat message', aiMsgData);
+          })
+          .catch((err) => {
+            console.error('Error con la IA:', err);
+            io.emit('user_event', {
+              text: 'Sofía tuvo dificultades para responder en este momento.',
+              type: 'error'
+            });
+          });
+      }
+    }
   });
 
   // 3. Desconexión
