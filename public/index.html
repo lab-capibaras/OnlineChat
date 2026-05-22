@@ -22,6 +22,7 @@
         required
         autofocus
       />
+      <div id="loginError" class="error-message"></div>
       <button type="submit" id="joinBtn">Entrar al chat →</button>
     </form>
 
@@ -29,13 +30,34 @@
   </div>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('usernameInput');
+    const errorEl = document.getElementById('loginError');
+
+    loginForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      const username = document.getElementById('usernameInput').value.trim();
+      const username = usernameInput.value.trim();
       if (!username) return;
+
+      // Expresión regular para detectar etiquetas HTML
+      const htmlTagRegex = /<[a-zA-Z/][^>]*>/i;
+      if (htmlTagRegex.test(username)) {
+        errorEl.textContent = 'El nombre no puede contener etiquetas HTML.';
+        errorEl.style.display = 'block';
+        usernameInput.style.borderColor = '#ef4444';
+        usernameInput.focus();
+        return;
+      }
+
       // Guardar en sessionStorage y redirigir
       sessionStorage.setItem('chat_username', username);
       window.location.href = 'chat.html';
+    });
+
+    usernameInput.addEventListener('input', function () {
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+      usernameInput.style.borderColor = '';
     });
   </script>
 </body>

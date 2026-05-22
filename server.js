@@ -45,6 +45,14 @@ io.on('connection', (socket) => {
   // 1. Usuario se une con su nombre
   socket.on('join', (rawUsername) => {
     if (typeof rawUsername !== 'string') return;
+
+    // Validar etiquetas HTML
+    const htmlTagRegex = /<[a-zA-Z/][^>]*>/i;
+    if (htmlTagRegex.test(rawUsername)) {
+      socket.emit('validation_error', { field: 'username', message: 'El nombre no puede contener etiquetas HTML.' });
+      return;
+    }
+
     const username = sanitizeHtml(rawUsername.trim(), { allowedTags: [], allowedAttributes: {} }).substring(0, 30);
     if (!username) return;
 
@@ -72,6 +80,13 @@ io.on('connection', (socket) => {
     if (!user) return;
 
     if (typeof rawText !== 'string') return;
+
+    // Validar etiquetas HTML
+    const htmlTagRegex = /<[a-zA-Z/][^>]*>/i;
+    if (htmlTagRegex.test(rawText)) {
+      socket.emit('validation_error', { field: 'message', message: 'El mensaje no puede contener etiquetas HTML.' });
+      return;
+    }
 
     const text = sanitizeHtml(rawText.trim(), {
       allowedTags: [],

@@ -49,11 +49,24 @@
     scrollToBottom();
   });
 
+  // ── Error de validación desde el servidor ─────────────────────────────────
+  socket.on('validation_error', function (err) {
+    showToast(err.message);
+  });
+
   // ── Enviar mensaje ─────────────────────────────────────────────────────────
   messageForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const text = messageInput.value.trim();
     if (!text) return;
+
+    // Validar etiquetas HTML
+    const htmlTagRegex = /<[a-zA-Z/][^>]*>/i;
+    if (htmlTagRegex.test(text)) {
+      showToast('El mensaje no puede contener etiquetas HTML.');
+      return;
+    }
+
     // Sanitizar con DOMPurify antes de enviar (doble capa)
     const clean = DOMPurify.sanitize(text, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
     if (!clean) return;
@@ -108,6 +121,33 @@
     const h = String(date.getHours()).padStart(2, '0');
     const m = String(date.getMinutes()).padStart(2, '0');
     return h + ':' + m;
+  }
+
+  // ── Mostrar Toast ──────────────────────────────────────────────────────────
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+      <span class="toast-icon">⚠️</span>
+      <span class="toast-text">${DOMPurify.sanitize(message)}</span>
+    `;
+    container.appendChild(toast);
+
+    // Animación de entrada
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+
+    // Ocultar y remover después de 3.5 segundos
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.addEventListener('transitionend', function () {
+        toast.remove();
+      });
+    }, 3500);
   }
 
 })();
