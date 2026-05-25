@@ -128,6 +128,6 @@ io.on('connection', (socket) => {
 
 // ─── Iniciar servidor ─────────────────────────────────────────────────────────
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
+  console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
   console.log(`   Accesible en la red por: http://<TU_IP>:${PORT}`);
 });
